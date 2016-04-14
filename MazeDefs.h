@@ -6,6 +6,8 @@
    includes.
 */
 
+#include <climits>
+
 namespace Maze {
   // For programming conciseness
   typedef unsigned short ushort;
@@ -13,5 +15,7 @@ namespace Maze {
   // Representation of whether a given Space is walkable or not, and how it
   // should be treated by the generation algorithms.
   typedef enum {M_WALL, M_PATH} maze_type;
-  
+
 }
+
+#endif
