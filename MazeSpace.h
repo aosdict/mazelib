@@ -23,15 +23,17 @@ namespace Maze {
     // custom space it is. If the type is a normal wall or path, this will
     // not be used.
     ushort structure_id;
-  
+
 
   public:
-    Space(): structure(false), data(M_WALL) {}
-    Space(bool is_st, ushort m_type, ushort st_type):
-      structure(is_st, path_type(m_type), structure_id(st_type) {}
-  
+    // default is a non-structure wall
+    Space(): structure(false), path_type(M_WALL) {}
+    // can be extended for any values though
+    Space(bool is_st, maze_type m_type, ushort st_type):
+      structure(is_st), path_type(m_type), structure_id(st_type) {}
+
   };
- 
+
 }
 
 #endif
