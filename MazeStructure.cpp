@@ -1,18 +1,26 @@
 #include "MazeStructure.h"
-#include <map>
 
 using namespace Maze;
+
+ushort Structure::width() const {
+  if(spaces.size() == 0) return 0;
+  else return spaces[0].size();
+}
+
+ushort Structure::height() const {
+  return spaces.size();
+}
 
 /* Format for input:
 
    First line must be "structure" and then the structure name, width and height
-    (as it is written in the file with no transformations):
+    (as they appear in the grid with no transformations):
    structure intersectionRoom 5 5
 
    Then is the section of character mappings, which let the user define what
     a specific character represents on the map of the structure. There must
     always be at least 1 mapping. Each line must have the following format:
-    mapping <char> <id_1> <prob> <type> <id_2> <prob> <type> ... <id_n> <type>
+    mapping <char> <id_1> <type> <prob> <id_2> <type> <prob> ... <id_n> <type>
     where the ids are unsigned shorts that represent user-defined space IDs,
     the types are either "wall" or "path",
     and the probs are unsigned shorts that represent its probability of being
@@ -23,13 +31,13 @@ using namespace Maze;
        when none of the others are. It is essentially the else statement.
      - If using one id, a probability should not be specified.
      - Behavior is undefined if the probabilities add up to more than 65535.
-    Here is an example line that will always generate data type 3 when a '%' is
-    found in the map:
-      mapping % 3
+    Here is an example line that will always generate data type 3 as a walkable
+    space when a '%' is found in the map:
+      mapping % 3 path
     Here is another example line that will generate data type 7 half of the time
     and nothing (keeping the normal wall that can get carved up for normal maze
     generation) the other half of the time when a '#' is found in the map:
-      mapping # 7 32768 0
+      mapping # 7 32768 path 0 wall
 
    After all mappings are entered, there must be a line containing only 'grid',
     and then the grid is defined. This is always a rectangle of characters that
@@ -46,31 +54,149 @@ using namespace Maze;
    end structure
 */
 
-/* Operator to read in the data from standard input or a file. We are NOT
+/* Operator to read in the data from standard input or a file. I am NOT
    concerned with validating it at this time. */
 std::istream& operator>>(std::istream& instr, Structure& structure) {
+
+  // reset anything relevant
+  structure.spaces.clear();
+  structure.name = "";
 
   // read initial info
   std::string tmp;
   unsigned short width, height;
   instr >> tmp >> structure.name >> width >> height;
-  structure.data = std::vector<vector<Space> >
-    (height, std::vector<Space>(width, Space()));
 
   // read mappings
-  std::string chstr, linestr;
-  std::map<char, MazeSpace
-  instr >> tmp >> chstr;
+  char curChar;
+  std::string line_type, linestr;
+  std::map<char, std::map<ushort, Space> > char_mappings;
+  instr >> line_type;
+  while(line_type == "mapping") {
+    instr >> currChar;
+    // read in the rest of the line
+    std::getline(instr, linestr);
+    std::stringstream ss(linestr);
+
+    ushort sid;
+    std::string typestr;
+    ushort prob;
+    ushort currentProbSum = 0;
+    ss >> sid >> typestr;
+    while(ss >> prob) {
+      if((unsigned int) currentProbSum + prob > USHRT_MAX) {
+        currentProbSum == USHRT_MAX;
+      }
+      else {
+        currentProbSum += prob;
+      }
+      char_mappings[curChar][currentProbSum] = make_space(sid, typestr);
+      ss >> sid >> typestr;
+    }
+    char_mappings[curChar][USHRT_MAX] = make_space(sid, typestr);
+
+    // get next line_type
+    instr >> line_type;
+  }
+
+  //line_type should now be "grid"
+  //read the grid
   std::getline(instr, linestr);
-  stringstream ss(linestr);
-                                              
+  while (linestr != "end structure") {
+    // Note that this assumes the grid is a rectangle.
+    // There is no checking that it isn't.
+    std::vector<std::map<ushort, Space> > temp;
+    for(int i=0; i<linestr.length; ++i) {
+      temp.push_back(char_mappings[linestr[i]]);
+    }
+    structure.spaces.push_back(temp);
+
+    std::getline(instr, linestr;)
+  }
+
+}
+
+Space Structure::make_space(ushort id, std::string typestr) {
+  // Actual logic at the moment: anything besides "path" is considered a wall
+  return Space((id == 0 ? false : true),
+               (typestr == "path" ? M_PATH : M_WALL),
+               id);
+}
+
+Space Structure::resolve_space(ushort x, ushort y) {
+  ushort rnd = (unsigned int) rand() & 0xFFFF;
+  for(std::map<ushort, Space>::iterator itr = spaces[y][x].begin();
+      itr != spaces[y][x].end(); ++itr) {
+    if(rnd < itr->first) {
+      return itr->second;
+    }
+  }
+  // if it actually manages not to hit anything in the map, just take the
+  // last "default" element
+  itr = spaces[y][x].end()--;
+  return itr->second;
+}
+
+/* Make appropriate transformations and resolve all choices of spaces,
+   generating a section of a maze. */
+vector<vector<Space> > Structure::generate(ushort rotation,
+                                           bool flipx, bool flipy) {
+  vector<vector<Space> > out;
+  /* Take the source x and source y in the structure. Apply any flips, then
+     apply a rotation.
+     Rotate 90 clockwise = flip horizontally then transpose.
+     Rotate 90 counterclockwise = flip vertically then transpose.
+     Rotate 180 = flip horizontally and vertically. */
+  if(spaces.size() == 0 || spaces[0].size() == 0) {
+    std::cerr << "WARNING: trying to generate a structure \"" << name <<
+                 "\" with a zero dimension" << std::endl;
+    return out;
+  }
+
+  ushort maxx = spaces[0].size()-1;
+  ushort maxy = spaces.size()-1;
+
+  for(int i=0; i<=maxy; ++i) {
+    out.push_back(vector<Space>());
+    for(int j=0; j<=maxx; ++j) {
+      ushort srcx = i;
+      ushort srcy = j;
+
+      // Resolve any flips
+      if(flipx) {
+        srcx = maxx - srcx;
+      }
+      if(flipy) {
+        srcy = maxy - srcy;
+      }
+
+      // Resolve any rotations
+      if(rotation == 90) {
+        srcx = maxx - srcx;
+        std::swap(srcx, srcy);
+      }
+      else if(rotation == 180) {
+        srcx = maxx - srcx;
+        srcy = maxy - srcy;
+      }
+      else if(rotation == 270) {
+        srcy = maxy - srcy;
+        std::swap(srcx, srcy);
+      }
+      // Rotation of 0 or indeed any other value will not rotate the structure.
+
+      // Resolve the spaces
+      out[i].push_back(resolve_space(srcx, srcy));
+    }
+  }
+  return out;
 }
 
 /* Details on where and how the structure will be placed will be supplied in
    another place and handled by something else. The Structure class will handle
    only the actual structure information.
 
-   
+
 
    Next, there will be lines controlling static placements (with a fixed
    coordinate and rotation). These look like:
