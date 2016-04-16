@@ -29,6 +29,11 @@ namespace Maze {
     Space(maze_type m_type, ushort st_type):
       path_type(m_type), structure_id(st_type) {}
 
+    ushort struct_id() const { return structure_id; }
+    maze_type type() const { return path_type; }
+
+    friend class MazeFloor;
+
   };
 
 }
