@@ -21,12 +21,25 @@ void Maze::GenerateMaze(const MazeAlgorithm& alg) {
    applied to all remaining floors.
    If algs is longer than floors, the extra algorithms will be disregarded.
 */
-void GenerateMaze(const vector<MazeAlgorithm>& algs) {
-  const MazeAlgorithm& current; 
+void Maze::GenerateMaze(const vector<MazeAlgorithm>& algs) {
+  const MazeAlgorithm& current;
   for(int i=0; i<floors.size(); ++i) {
     if(i < algs.size()) {
       current = algs[i];
     }
     current.GenerateMaze(floors[i]);
+  }
+}
+
+/* Displays the maze as output printed to the terminal. By default, paths will
+   print as '.', walls will print as '#', and structure spaces will print as
+   the value looked up in the map. If it's not there, it will just print the
+   structure ID. The number of characters between each Space is controlled by
+   the spacing parameter. */
+void Maze::RenderAsText(uchar spacing, std::map<ushort,char> structviews) {
+  for(ushort i=0; i<floors.size(); ++i) {
+    std::cout << "Floor " << i << std::endl;
+    floors[i].RenderAsText(spacing, structviews);
+    std::cout << std::endl;
   }
 }
