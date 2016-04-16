@@ -13,6 +13,7 @@
 
 namespace Maze {
   // For programming conciseness
+  typedef unsigned char uchar;
   typedef unsigned short ushort;
 
   // Representation of whether a given Space is walkable or not, and how it

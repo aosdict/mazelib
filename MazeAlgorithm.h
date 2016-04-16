@@ -33,7 +33,7 @@
    Algorithms that may be added at a later date:
    Binary Space Partitioning: http://www.roguebasin.com/index.php?title=Basic_BSP_Dungeon_generation
    Cellular Automata: http://www.roguebasin.com/index.php?title=Cellular_Automata_Method_for_Generating_Random_Cave-Like_Levels
-   
+
    The following algorithms are not going to be implemented because they are
    extremely inefficient:
    Wilson's algorithm
@@ -42,14 +42,15 @@
 
 
 class MazeAlgorithm {
- private:
+private:
   typedef unsigned short ushort;
 
- protected:
+protected:
   // Parameters that all algorithms must implement
-  ushort staircase_attempts;
-  
- public:
+  //ushort staircase_attempts;
+
+public:
+  // Pure virtual generation function
   virtual void GenerateMaze(MazeFloor& floor) = 0;
 };
 

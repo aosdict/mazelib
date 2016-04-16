@@ -5,18 +5,24 @@
    of a maze. */
 
 #include "MazeSpace.h"
+#include <map>
 
-class MazeFloor {
-private:
-  typedef unsigned short ushort;
-  vector<vector<MazeSpace> > maze;
+namespace Maze {
 
-public:
-  MazeFloor(ushort width, ushort height);
-  
-  // Staircases always generate downwards, and the lowest level will be
-  // prevented from generating any.
-  
-};
+  class Floor {
+  private:
+    typedef unsigned short ushort;
+    std::vector<std::vector<Space> > floor;
+
+  public:
+    Floor(ushort width, ushort height);
+
+    RenderAsText(uchar spacing, std::map<ushort,char> structviews);
+    // Staircases always generate downwards, and the lowest level will be
+    // prevented from generating any.
+
+  };
+
+}
 
 #endif
