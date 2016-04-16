@@ -6,7 +6,10 @@
    includes.
 */
 
+// Global includes
 #include <climits>
+#include <cstdlib>
+
 
 namespace Maze {
   // For programming conciseness
