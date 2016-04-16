@@ -11,26 +11,23 @@ namespace Maze {
   class Space {
   private:
 
-    // Represents whether this space is part of a structure.
-    bool structure;
-
     // Actual representation of the maze data. Everything has to be regarded
     // either as a path or as a wall by the maze generator. Structures
     // must therefore always define one of the two.
     maze_type path_type;
 
     // If the space is part of a structure, this will represent what kind of
-    // custom space it is. If the type is a normal wall or path, this will
-    // not be used.
+    // custom space it is. A value of 0 represents "not a structure" and will
+    // be a normal wall or path usable by the maze algorithm.
     ushort structure_id;
 
 
   public:
     // default is a non-structure wall
-    Space(): structure(false), path_type(M_WALL) {}
+    Space(): path_type(M_WALL), structure_id(0) {}
     // can be extended for any values though
-    Space(bool is_st, maze_type m_type, ushort st_type):
-      structure(is_st), path_type(m_type), structure_id(st_type) {}
+    Space(maze_type m_type, ushort st_type):
+      path_type(m_type), structure_id(st_type) {}
 
   };
 
