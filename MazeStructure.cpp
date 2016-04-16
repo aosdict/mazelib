@@ -1,6 +1,7 @@
 #include "MazeStructure.h"
+#include <sstream>
 
-using namespace Maze;
+namespace Maze {
 
 ushort Structure::width() const {
   if(spaces.size() == 0) return 0;
@@ -73,7 +74,7 @@ std::istream& operator>>(std::istream& instr, Structure& structure) {
   std::map<char, std::map<ushort, Space> > char_mappings;
   instr >> line_type;
   while(line_type == "mapping") {
-    instr >> currChar;
+    instr >> curChar;
     // read in the rest of the line
     std::getline(instr, linestr);
     std::stringstream ss(linestr);
@@ -82,6 +83,7 @@ std::istream& operator>>(std::istream& instr, Structure& structure) {
     std::string typestr;
     ushort prob;
     ushort currentProbSum = 0;
+    maze_type ty;
     ss >> sid >> typestr;
     while(ss >> prob) {
       if((unsigned int) currentProbSum + prob > USHRT_MAX) {
@@ -90,10 +92,12 @@ std::istream& operator>>(std::istream& instr, Structure& structure) {
       else {
         currentProbSum += prob;
       }
-      char_mappings[curChar][currentProbSum] = make_space(sid, typestr);
+      if(typestr == "path") ty = M_PATH;
+      else ty = M_WALL;
+      char_mappings[curChar][currentProbSum] = Space(ty, sid);
       ss >> sid >> typestr;
     }
-    char_mappings[curChar][USHRT_MAX] = make_space(sid, typestr);
+    char_mappings[curChar][USHRT_MAX] = Space(ty, sid);
 
     // get next line_type
     instr >> line_type;
@@ -106,27 +110,20 @@ std::istream& operator>>(std::istream& instr, Structure& structure) {
     // Note that this assumes the grid is a rectangle.
     // There is no checking that it isn't.
     std::vector<std::map<ushort, Space> > temp;
-    for(int i=0; i<linestr.length; ++i) {
+    for(int i=0; i<linestr.length(); ++i) {
       temp.push_back(char_mappings[linestr[i]]);
     }
     structure.spaces.push_back(temp);
 
-    std::getline(instr, linestr;)
+    std::getline(instr, linestr);
   }
 
 }
 
-Space Structure::make_space(ushort id, std::string typestr) {
-  // Actual logic at the moment: anything besides "path" is considered a wall
-  return Space((id == 0 ? false : true),
-               (typestr == "path" ? M_PATH : M_WALL),
-               id);
-}
-
 Space Structure::resolve_space(ushort x, ushort y) {
   ushort rnd = (unsigned int) rand() & 0xFFFF;
-  for(std::map<ushort, Space>::iterator itr = spaces[y][x].begin();
-      itr != spaces[y][x].end(); ++itr) {
+  std::map<ushort, Space>::iterator itr;
+  for(itr = spaces[y][x].begin(); itr != spaces[y][x].end(); ++itr) {
     if(rnd < itr->first) {
       return itr->second;
     }
@@ -139,9 +136,9 @@ Space Structure::resolve_space(ushort x, ushort y) {
 
 /* Make appropriate transformations and resolve all choices of spaces,
    generating a section of a maze. */
-vector<vector<Space> > Structure::generate(ushort rotation,
-                                           bool flipx, bool flipy) {
-  vector<vector<Space> > out;
+std::vector<std::vector<Space> > Structure::generate
+  (ushort rotation, bool flipx, bool flipy) {
+  std::vector<std::vector<Space> > out;
   /* Take the source x and source y in the structure. Apply any flips, then
      apply a rotation.
      Rotate 90 clockwise = flip horizontally then transpose.
@@ -157,7 +154,7 @@ vector<vector<Space> > Structure::generate(ushort rotation,
   ushort maxy = spaces.size()-1;
 
   for(int i=0; i<=maxy; ++i) {
-    out.push_back(vector<Space>());
+    out.push_back(std::vector<Space>());
     for(int j=0; j<=maxx; ++j) {
       ushort srcx = i;
       ushort srcy = j;
@@ -218,3 +215,4 @@ vector<vector<Space> > Structure::generate(ushort rotation,
    random 0 10 yes yes
    random 5 12 yes no
                                                   */
+}

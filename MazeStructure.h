@@ -28,9 +28,6 @@ namespace Maze {
     // Randomly resolve a certain space from the array of probabilities.
     Space resolve_space(ushort x, ushort y);
 
-    // Construct a space from the structure id and the type string.
-    Space make_space(ushort id, std::string typestr);
-
     // Structure name
     std::string name;
 
@@ -43,7 +40,8 @@ namespace Maze {
     // Return the grid as a double vector of Spaces, resolving any possible
     // choices of spaces and applying any transformations, ready to be copied
     // into a MazeFloor.
-    vector<vector<Space> > generate(ushort rotation, bool flipx, bool flipy);
+    std::vector<std::vector<Space> > generate
+      (ushort rotation, bool flipx, bool flipy);
 
   };
 
