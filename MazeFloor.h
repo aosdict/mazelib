@@ -5,6 +5,7 @@
    of a maze. */
 
 #include "MazeSpace.h"
+#include <vector>
 #include <map>
 
 namespace Maze {
@@ -17,7 +18,8 @@ namespace Maze {
   public:
     Floor(ushort width, ushort height);
 
-    RenderAsText(uchar spacing, std::map<ushort,char> structviews);
+    void RenderAsText(uchar spacing, std::map<ushort,char> structviews);
+
     // Staircases always generate downwards, and the lowest level will be
     // prevented from generating any.
 
