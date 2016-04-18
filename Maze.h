@@ -8,26 +8,28 @@
 #include "MazeAlgorithm.h"
 #include <map>
 
+
 namespace Maze {
 
   class Maze {
   private:
     typedef unsigned short ushort;
     // Floors will be regarded as descending (level 0 goes down to level 1, etc)
-    std::vector<MazeFloor> floors;
+    std::vector<Floor> floors;
 
 
   public:
     // There will be no concept of predefined edge spaces, i.e. walls or
     // something, by default. The maze spans the entire area.
 
-    Maze(ushort width, ushort height, ushort floors);
+    Maze(ushort width, ushort height, ushort numFloors);
 
 
-    void GenerateMaze(ushort staircase_attempts, const MazeAlgorithm& alg);
-    void GenerateMaze(const vector<ushort>& staircase_attempts,
-                      const vector<MazeAlgorithm>& algs);
+    void GenerateMaze(const Algorithm* alg);
+    void GenerateMaze(const std::vector<Algorithm*> algs);
 
+    // TODO: have a RenderAsText version that doesn't take the map, isn't
+    // intended for structures, and will show any structures as * or something
     void RenderAsText(uchar spacing, std::map<ushort, char> structviews);
 
   };

@@ -1,18 +1,26 @@
 #include "Maze.h"
+#include <iostream>
+
+namespace Maze {
 
 /* Calling this constructor will NOT generate a maze. It will allocate the
    data in the correct sizes accordingly, and nothing else.
 */
-Maze::Maze(ushort width, ushort height, ushort floors) {
+Maze::Maze(ushort width, ushort height, ushort numFloors) {
   // Make the default floor populated with default MazeSpaces and put a copy on
   // every floor
-  floors = vector<MazeFloor>(floors, MazeFloor(width, height));
+  floors = std::vector<Floor>(numFloors, Floor(width, height));
 }
 
 /* Generates the maze with the same parameters on each floor. */
-void Maze::GenerateMaze(const MazeAlgorithm& alg) {
+void Maze::GenerateMaze(const Algorithm* alg) {
+  if(alg == NULL) {
+    std::cerr << "ERROR: trying to generate all floors with no algorithm"
+              << std::endl;
+    return;
+  }
   for(int i=0; i<floors.size(); ++i) {
-    alg.GenerateMaze(floors[i]);
+    alg->GenerateMaze(floors[i]);
   }
 }
 
@@ -21,13 +29,19 @@ void Maze::GenerateMaze(const MazeAlgorithm& alg) {
    applied to all remaining floors.
    If algs is longer than floors, the extra algorithms will be disregarded.
 */
-void Maze::GenerateMaze(const vector<MazeAlgorithm>& algs) {
-  const MazeAlgorithm& current;
+void Maze::GenerateMaze(const std::vector<Algorithm*> algs) {
+  Algorithm* current;
   for(int i=0; i<floors.size(); ++i) {
     if(i < algs.size()) {
       current = algs[i];
     }
-    current.GenerateMaze(floors[i]);
+    if(current == NULL) {
+      std::cerr << "ERROR: trying to generate floor" << i
+                << "with no algorithm" << std::endl;
+    }
+    else {
+      current->GenerateMaze(floors[i]);
+    }
   }
 }
 
@@ -42,4 +56,6 @@ void Maze::RenderAsText(uchar spacing, std::map<ushort,char> structviews) {
     floors[i].RenderAsText(spacing, structviews);
     std::cout << std::endl;
   }
+}
+
 }
