@@ -30,6 +30,9 @@
      much more interesting mazes than the normal recursive division algorithm,
      and can be modified to generate organic rooms integrated with the maze.
 
+   Note that wall-building algorithms should wipe the default floor clean
+   (converting all ordinary walls to paths) before starting.
+
    Algorithms that may be added at a later date:
    Binary Space Partitioning: http://www.roguebasin.com/index.php?title=Basic_BSP_Dungeon_generation
    Cellular Automata: http://www.roguebasin.com/index.php?title=Cellular_Automata_Method_for_Generating_Random_Cave-Like_Levels
@@ -40,18 +43,20 @@
    Aldous-Broder algorithm
 */
 
+namespace Maze {
 
-class MazeAlgorithm {
-private:
-  typedef unsigned short ushort;
+  class Algorithm {
+  private:
 
-protected:
-  // Parameters that all algorithms must implement
-  //ushort staircase_attempts;
+  protected:
+    // Parameters that all algorithms must implement
+    //ushort staircase_attempts;
 
-public:
-  // Pure virtual generation function
-  virtual void GenerateMaze(MazeFloor& floor) = 0;
-};
+  public:
+    // Pure virtual generation function
+    virtual void GenerateMaze(Floor& floor) const = 0;
+  };
+
+}
 
 #endif
