@@ -4,11 +4,19 @@
 namespace Maze {
 
 Floor::Floor(ushort width, ushort height) {
-  //MazeSpace def;
+  if(width == 0 || height == 0) {
+    std::cerr << "WARNING: Generating a floor with 0 width or height"
+              << std::endl;
+  }
   floor = std::vector<std::vector<Space> >(height, std::vector<Space>(width, Space()));
 }
 
-void Floor::RenderAsText(uchar spacing, std::map<ushort,char> structviews) {
+Space& Floor::operator() (ushort x, ushort y) {
+  return floor[y][x];
+}
+
+void Floor::RenderAsText(uchar spacing, std::map<ushort,char> structviews) const
+{
   // For now, spacing will be ignored and there will be no spacing.
   for(int i=0; i<floor.size(); ++i) {
     for(int j=0; j<floor[i].size(); ++j) {

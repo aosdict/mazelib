@@ -18,7 +18,12 @@ namespace Maze {
   public:
     Floor(ushort width, ushort height);
 
-    void RenderAsText(uchar spacing, std::map<ushort,char> structviews);
+    ushort height() const { return floor.size(); }
+    ushort width() const { return (floor.size() ? floor[0].size() : 0); }
+
+    Space& operator() (ushort x, ushort y);
+
+    void RenderAsText(uchar spacing, std::map<ushort,char> structviews) const;
 
     // Staircases always generate downwards, and the lowest level will be
     // prevented from generating any.
