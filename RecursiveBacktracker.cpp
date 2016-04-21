@@ -1,5 +1,6 @@
 #include "RecursiveBacktracker.h"
 #include "MazeSpace.h"
+#include <iostream>
 
 /* All possible permutations of the bits 00, 01, 10, and 11
    Each value corresponds to a direction.
@@ -14,6 +15,8 @@ static const unsigned char bitperms[24] = {
 
 namespace Maze {
 
+// Assumes that the space it is being called on has already been converted to
+// a path
 void RecursiveBacktracker::recurse(ushort x, ushort y, Floor& floor) const {
   // create an instance of the path space we want to carve
   const Space path(M_PATH, 0);
@@ -65,6 +68,10 @@ void RecursiveBacktracker::GenerateMaze(Floor& floor) const {
   ushort start_x = rand() % fw;
   ushort start_y = rand() % fh;
 
+  // turn it into a path
+  floor(start_x, start_y) = Space(M_PATH, 0);
+
+  // start the recursion
   recurse(start_x, start_y, floor);
 
 }
