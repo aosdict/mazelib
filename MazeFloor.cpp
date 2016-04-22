@@ -15,6 +15,11 @@ Space& Floor::operator() (ushort x, ushort y) {
   return floor[y][x];
 }
 
+/* Same as the other operator() but this takes a pair instead. */
+Space& operator() (std::pair<ushort, ushort> coord) {
+  return floor[coord.second][coord.first];
+}
+
 void Floor::RenderAsText(uchar spacing, std::map<ushort,char> structviews) const
 {
   // For now, spacing will be ignored and there will be no spacing.

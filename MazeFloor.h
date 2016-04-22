@@ -22,6 +22,7 @@ namespace Maze {
     ushort width() const { return (floor.size() ? floor[0].size() : 0); }
 
     Space& operator() (ushort x, ushort y);
+    Space& operator() (std::pair<ushort, ushort> coord);
 
     void RenderAsText(uchar spacing, std::map<ushort,char> structviews) const;
 
