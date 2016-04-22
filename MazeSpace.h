@@ -21,18 +21,24 @@ namespace Maze {
     // be a normal wall or path usable by the maze algorithm.
     ushort structure_id;
 
+    // If the space is valid for traveling up or down a floor.
+    bool can_go_up;
+    bool can_go_down;
+
 
   public:
     // default is a non-structure wall
-    Space(): path_type(M_WALL), structure_id(0) {}
+    Space(): path_type(M_WALL), structure_id(0), can_go_up(false),
+      can_go_down(false) {}
     // can be extended for any values though
     Space(maze_type m_type, ushort st_type):
-      path_type(m_type), structure_id(st_type) {}
+      path_type(m_type), structure_id(st_type), can_go_up(false),
+      can_go_down(false) {}
 
     ushort struct_id() const { return structure_id; }
     maze_type type() const { return path_type; }
 
-    friend class MazeFloor;
+    //friend class Floor;
 
   };
 

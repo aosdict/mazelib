@@ -16,7 +16,7 @@ namespace Maze {
     typedef unsigned short ushort;
     // Floors will be regarded as descending (level 0 goes down to level 1, etc)
     std::vector<Floor> floors;
-
+    
 
   public:
     // There will be no concept of predefined edge spaces, i.e. walls or
