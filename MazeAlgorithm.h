@@ -19,9 +19,11 @@
    Connected Rooms with Tunnels: same as connected rooms, but some of the rooms
      will use a tunnel/maze painter instead of generating a room
    Eller's: possibly infinite in one direction along one axis
-   Eller Variant: attempt to make Eller's work while removing the strict
-     path-wall-path format of these algorithms. Not designed yet.
-   Hunt and Kill: random stepping
+   Eller Mod: attempt to make Eller's work while removing the strict
+     path-wall-path format of these algorithms. Conceptually difficult and not
+     designed yet.
+   Hunt and Kill: random stepping from a random start point until a previous
+     path is found.
    Growing Tree: very versatile and flexible algorithm that can behave
      identically to Recursive Backtracker, Prim's, a breadth-first search, or
      any combination thereof.
@@ -29,6 +31,9 @@
      Recursive division that is more computationally expensive, but generates
      much more interesting mazes than the normal recursive division algorithm,
      and can be modified to generate organic rooms integrated with the maze.
+   Recursive Division Variant Mod:
+     Same as Recursive Division Variant but optimized for a square grid. Still
+     being worked on.
 
    Note that wall-building algorithms should wipe the default floor clean
    (converting all ordinary walls to paths) before starting.
@@ -37,11 +42,14 @@
    Binary Space Partitioning: http://www.roguebasin.com/index.php?title=Basic_BSP_Dungeon_generation
    Cellular Automata: http://www.roguebasin.com/index.php?title=Cellular_Automata_Method_for_Generating_Random_Cave-Like_Levels
 
-   The following algorithms are not going to be implemented because they are
-   extremely inefficient:
-   Wilson's algorithm
-   Aldous-Broder algorithm
+   The following algorithms are not going to be implemented:
+   Wilson's algorithm (extremely inefficient)
+   Aldous-Broder algorithm (extremely inefficient)
+   Binary Tree (badly blemished)
 */
+
+/* An idea is to call all algorithms that rely on separate walls and paths
+   "discrete-walled". */
 
 namespace Maze {
 
