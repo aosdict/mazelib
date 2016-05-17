@@ -27,13 +27,15 @@
    Growing Tree: very versatile and flexible algorithm that can behave
      identically to Recursive Backtracker, Prim's, a breadth-first search, or
      any combination thereof.
-   Recursive Division Variant: http://weblog.jamisbuck.org/2015/1/15/better-recursive-division-algorithm.html
+   Nonlinear Recursive Division: http://weblog.jamisbuck.org/2015/1/15/better-recursive-division-algorithm.html
      Recursive division that is more computationally expensive, but generates
      much more interesting mazes than the normal recursive division algorithm,
      and can be modified to generate organic rooms integrated with the maze.
-   Recursive Division Variant Mod:
-     Same as Recursive Division Variant but optimized for a square grid. Still
+   Nonlinear Recursive Division Mod:
+     Same as Nonlinear Recursive Division but not discrete-walled. Still
      being worked on.
+   Recursive Division Wall-Builder: Like the plain recursive division algorithm
+     but with the ability for its walls to twist and bend.
 
    Note that wall-building algorithms should wipe the default floor clean
    (converting all ordinary walls to paths) before starting.
