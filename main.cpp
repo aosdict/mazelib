@@ -1,9 +1,10 @@
 #include "Maze.h"
 #include "RecursiveBacktracker.h"
 #include <map>
+#include <iostream>
 
 int main(int argc, char* argv[]) {
-  Maze::Maze myMaze(10,10,2);
+  Maze::Maze myMaze(21,21,2);
   std::map<unsigned short, char> structmap;
   myMaze.RenderAsText(0, structmap);
 
@@ -12,4 +13,6 @@ int main(int argc, char* argv[]) {
   myMaze.GenerateMaze(&rb);
 
   myMaze.RenderAsText(0, structmap);
+
+  std::cout << sizeof(Maze::Space) << std::endl;
 }

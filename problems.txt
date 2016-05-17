@@ -1,0 +1,34 @@
+How to deal with passage between floors?
+1 - No passage in the maze, travel between floors is done by some sort of teleport (a simple example is getting teleported to the next floor upon completing the current one) and this is defined by the person generating the maze (WILL NOT do this, the library needs to be able to handle this sort of thing)
+2 - Allow structures to define up or down spaces and provide some default structures
+3 - Add M_UP and M_DOWN maze_data types. This prevents "ladders" that can go both up and down on the same space though.
+4 - Make maze_data into a complex bit field, with 1 bit for up travel and 1 bit for down travel, 1 bit for wall/path
+5 - Do that but with booleans in MazeSpace instead (requires constructor complexity and a lot more complexity in the structure definitions file)
+6 - When generating a new floor, make sure to generate up spaces that correspond with all down spaces from the level above
+
+How to deal with multi-floor structures? (e.g. staircases)
+1 - Define multiple levels of a structure, with offsets for the subsequent levels.
+2 - Define entire structure in a 3D view instead of 2D
+3 - Have each structure with a downward space specify for the space(s) which structures are eligible to generate below them and with which rotations.
+
+How to deal with structure spaces being treated as their base types?
+For example: simple square room structure
+##.##
+#...#
+.....
+....#
+##.##
+Assuming the interior spaces are defined as paths because there should be no reason to define them as walls. If the entryways are defined as paths, some maze algorithms will veer away from them to avoid loops. If they are defined as normal non-structure walls, the algorithms may still dodge them to avoid the interior path spaces.
+1 - Make a new maze_type that is an "accepting path", which will be regarded as a path space but will not be regarded by algorithms as dangerous of creating loops
+2 - If a space is M_PATH and is part of a structure, treat it as an accepting path
+
+How to deal with a 1xN structure that includes some walls? The RB algorithm could skip right over this and overwrite it with a path.
+
+How to deal with structure placement with discrete-walled algorithms? They don't seem very compatible with non-discrete-walled structures. I.e. you could make a structure like this:
+::####
+###..#
+.....#
+###..#
+::####
+that gets placed randomly in the maze and then a RB algorithm for example never actually hits that corridor because it took a straight vertical path one space
+to the left and its "spaces" are aligned with the 2nd and 4th rows.
